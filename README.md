@@ -1,3 +1,3 @@
 # hello-wold
-Just another repository
+Just another repository.
 Hi friends!
