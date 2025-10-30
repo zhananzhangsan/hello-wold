@@ -3,7 +3,7 @@ docker pull  path || '/cloud/profile/o3MkOsLzt'
     SUB_PATH || 'sub';       
     PORT || 3000;      
     UUID || ''; 
-    ARGO_DOMAIN || '';          
+    ARGO_DOMAIN || ''; //cloud gogod         
     ARGO_AUTH || '';              
     ARGO_PORT || 8001
   docker.io/blug/argo-x:latest 
