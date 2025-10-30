@@ -14,3 +14,7 @@ docker pull  path || '/cloud/profile/o3MkOsLzt'
     ARGO_PORT || 8080
     WSPATH || 'cloud'
   docker.io/blueg/xhttp
+    7860
+    DOMAIN || ''
+    UUID || ''
+    XPATH || UUID.slice(0, 8);       // 无需设置xhttp路径,自动获取uuid前8位
