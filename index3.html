@@ -305,7 +305,6 @@
         <p id="message-text">Final Score: <span id="final-score">0</span></p>
         <button onclick="game.restart()">Try Again</button>
     </div>
-    
     <script>
         class Game2048 {
             constructor() {
@@ -318,9 +317,14 @@
                 this.musicEnabled = true;
                 this.soundEnabled = true;
                 this.audioContext = null;
-                this.musicOscillator = null;
+                this.musicOscillator = null; // Keeps track of current active main oscillator
                 this.musicGain = null;
-                this.currentMusicTime = 0;
+                
+                // New Loop Control Variables
+                this.nextNoteTime = 0;
+                this.schedulerTimer = null;
+                this.isMusicPlaying = false;
+                
                 this.init();
             }
             init() {
@@ -334,13 +338,8 @@
                 // 创建音频上下文
                 this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
-            createBackgroundMusic() {
+            createBackgroundMusic(startTime) {
                 if (!this.audioContext || !this.musicEnabled) return;
-                
-                // 停止之前的音乐
-                if (this.musicOscillator) {
-                    this.musicOscillator.stop();
-                }
                 
                 // 创建主振荡器
                 const oscillator = this.audioContext.createOscillator();
@@ -363,7 +362,8 @@
                     {note: 659.25, duration: 0.5}  // E5
                 ];
                 
-                let currentTime = 0;
+                // 使用传入的 startTime，如果没有则使用当前时间
+                let currentTime = startTime || this.audioContext.currentTime;
                 const totalDuration = 5; // 5秒循环
                 
                 // 创建音符序列
@@ -374,7 +374,7 @@
                     oscillatorNode.frequency.value = noteData.note;
                     oscillatorNode.type = 'sine';
                     
-                    // 设置音符淡入淡出
+                    // 设置音符淡入淡出 (相对于传入的 startTime)
                     noteGain.gain.setValueAtTime(0, currentTime);
                     noteGain.gain.linearRampToValueAtTime(0.1, currentTime + 0.05);
                     noteGain.gain.linearRampToValueAtTime(0.1, currentTime + noteData.duration - 0.05);
@@ -403,16 +403,19 @@
                     bassNote.frequency.value = 130.81;
                     bassNote.type = 'triangle';
                     
-                    bassNoteGain.gain.setValueAtTime(0, i);
-                    bassNoteGain.gain.linearRampToValueAtTime(0.05, i + 0.05);
-                    bassNoteGain.gain.linearRampToValueAtTime(0.05, i + 0.1);
-                    bassNoteGain.gain.linearRampToValueAtTime(0, i + 0.15);
+                    // 使用绝对时间计算
+                    const noteTime = (startTime || this.audioContext.currentTime) + i;
+
+                    bassNoteGain.gain.setValueAtTime(0, noteTime);
+                    bassNoteGain.gain.linearRampToValueAtTime(0.05, noteTime + 0.05);
+                    bassNoteGain.gain.linearRampToValueAtTime(0.05, noteTime + 0.1);
+                    bassNoteGain.gain.linearRampToValueAtTime(0, noteTime + 0.15);
                     
                     bassNote.connect(bassNoteGain);
                     bassNoteGain.connect(gainNode);
                     
-                    bassNote.start(i);
-                    bassNote.stop(i + 0.15);
+                    bassNote.start(noteTime);
+                    bassNote.stop(noteTime + 0.15);
                 }
                 
                 // 添加和弦效果
@@ -421,6 +424,8 @@
                 chordOscillator.type = 'sine';
                 chordGain.gain.value = 0.05;
                 
+                const chordStartTime = startTime || this.audioContext.currentTime;
+
                 // 创建C大调和弦
                 const chordNotes = [261.63, 329.63, 392]; // C4, E4, G4
                 chordNotes.forEach((freq, index) => {
@@ -428,70 +433,83 @@
                     chordNote.frequency.value = freq;
                     chordNote.type = 'sine';
                     chordNote.connect(chordGain);
-                    chordNote.start();
-                    chordNote.stop(totalDuration);
+                    chordNote.start(chordStartTime);
+                    chordNote.stop(chordStartTime + totalDuration);
                 });
                 
                 // 连接到输出
                 gainNode.connect(this.audioContext.destination);
                 chordGain.connect(this.audioContext.destination);
                 
-                this.musicOscillator = oscillator;
+                this.musicOscillator = oscillator; // 仅作为标记引用
                 this.musicGain = gainNode;
-                
-                // 设置循环
-                this.currentMusicTime = currentTime;
             }
             setupAudioControls() {
                 const musicToggle = document.getElementById('music-toggle');
                 const soundToggle = document.getElementById('sound-toggle');
-                
                 musicToggle.addEventListener('click', () => {
                     this.musicEnabled = !this.musicEnabled;
                     musicToggle.classList.toggle('muted', !this.musicEnabled);
                     musicToggle.textContent = this.musicEnabled ? '🎵' : '🔇';
-                    
                     if (this.musicEnabled) {
                         this.startBackgroundMusic();
                     } else {
                         this.stopBackgroundMusic();
                     }
                 });
-                
                 soundToggle.addEventListener('click', () => {
                     this.soundEnabled = !this.soundEnabled;
                     soundToggle.classList.toggle('muted', !this.soundEnabled);
                     soundToggle.textContent = this.soundEnabled ? '🔊' : '🔇';
                 });
-                
                 // 等待用户交互后启动音频
                 document.addEventListener('click', () => {
-                    if (this.musicEnabled && !this.musicOscillator) {
+                    if (this.musicEnabled && !this.isMusicPlaying) {
                         this.startBackgroundMusic();
                     }
                 }, { once: true });
             }
             startBackgroundMusic() {
                 if (!this.audioContext) return;
-                
                 if (this.audioContext.state === 'suspended') {
                     this.audioContext.resume();
                 }
                 
-                this.createBackgroundMusic();
+                if (this.isMusicPlaying) return;
+                this.isMusicPlaying = true;
+                this.nextNoteTime = this.audioContext.currentTime;
                 
-                // 设置5秒循环
-                setTimeout(() => {
-                    if (this.musicEnabled) {
-                        this.createBackgroundMusic();
-                        this.startBackgroundMusic();
-                    }
-                }, 5000);
+                this.scheduleLoop();
+            }
+            scheduleLoop() {
+                if (!this.musicEnabled || !this.isMusicPlaying) return;
+
+                // 调度器：如果在接下来 0.1 秒内需要播放下一个循环，则现在就调度它
+                // 这样可以确保精确的节奏，而不是依赖 setTimeout 的精度
+                while (this.nextNoteTime < this.audioContext.currentTime + 0.1) {
+                    this.createBackgroundMusic(this.nextNoteTime);
+                    this.nextNoteTime += 5; // 增加 5 秒
+                }
+                
+                // 定期检查 (100ms)
+                this.schedulerTimer = setTimeout(() => {
+                    this.scheduleLoop();
+                }, 100);
             }
             stopBackgroundMusic() {
-                if (this.musicOscillator) {
-                    this.musicOscillator.stop();
-                    this.musicOscillator = null;
+                this.isMusicPlaying = false;
+                if (this.schedulerTimer) {
+                    clearTimeout(this.schedulerTimer);
+                    this.schedulerTimer = null;
+                }
+                // 注意：这里没有强制停止当前正在播放的声音，而是让它自然播放完(最多几秒)
+                // 或者我们可以通过 disconnect musicGain 来立即静音，如果需要的话：
+                if (this.musicGain) {
+                    this.musicGain.disconnect(); 
+                    // 但由于每次 createBackgroundMusic 都创建新的 gainNode，
+                    // 若要完全静音正在播放的，需要在类级别维护所有活跃的 gainNodes，
+                    // 对于简单游戏，停止调度并让尾音自然结束通常听起来更自然。
+                    // 若要强制静音，可在 createBackgroundMusic 中将 gainNode 存入数组，此处遍历 disconnect。
                 }
             }
             setupEventListeners() {
@@ -503,7 +521,6 @@
                         this.move(direction);
                     }
                 });
-                
                 // Touch events
                 let touchStartX = 0;
                 let touchStartY = 0;
@@ -533,17 +550,13 @@
             }
             playSound(soundId) {
                 if (!this.soundEnabled || !this.audioContext) return;
-                
                 const oscillator = this.audioContext.createOscillator();
                 const gainNode = this.audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(this.audioContext.destination);
-                
                 // 根据不同音效设置不同频率
                 let frequency = 440;
                 let duration = 0.1;
-                
                 switch(soundId) {
                     case 'move-sound':
                         frequency = 300;
@@ -562,14 +575,11 @@
                         duration = 0.3;
                         break;
                 }
-                
                 oscillator.frequency.value = frequency;
                 oscillator.type = 'sine';
-                
                 gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
                 gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.01);
                 gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + duration);
-                
                 oscillator.start();
                 oscillator.stop(this.audioContext.currentTime + duration);
             }
