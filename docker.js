@@ -7,7 +7,7 @@ docker pull  path || '/cloud/profile/o3MkOsLzt'
     ARGO_AUTH || '';              
     ARGO_PORT || 8001
 
-docker pull ghcr.io/zhananzhangsan/nodews:latest 
+docker pull ghcr.io/zhananzhangsan/2048:latest 
 PaaS 平台设置的环境变量
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
