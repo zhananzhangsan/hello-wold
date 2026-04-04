@@ -55,7 +55,7 @@ function getRandomArray(array) {
     WSPATH || 'cloud'
 
   docker.io/blueg/xhttp
-    7860
+    3000
     DOMAIN || ''
     UUID || ''
     XPATH || UUID.slice(0, 8);       // 无需设置xhttp路径,自动获取uuid前8位
