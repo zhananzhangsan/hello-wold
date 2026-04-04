@@ -54,7 +54,7 @@ function getRandomArray(array) {
     ARGO_PORT || 8080
     WSPATH || 'cloud'
 
-  docker.io/blueg/xhttp:basic  //basic-标准版 //ipv4first-自定义dns版
+  docker.io/blueg/xhttp:latest  //"ipv4first","01","latest"
     3000
     DOMAIN || ''
     UUID || ''
