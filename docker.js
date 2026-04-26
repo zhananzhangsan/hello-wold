@@ -47,12 +47,13 @@ function getRandomArray(array) {
 }
 ```
   docker.io/blug/argo-x:latest 
+  path='/dm/v/242cf53b5bdb","/dm24b4b1e1","/dm24b4b1e2","/dm24b4b1e3"
     PORT || 3000;      
     UUID || ''; 
     ARGO_DOMAIN || '';         
     ARGO_AUTH || '';              
     ARGO_PORT || 8080
-    WSPATH || 'cloud'
+    WSPATH || 'dm'
 
   docker.io/blueg/xhttp:latest  //"ipv4first","01","latest"
     3000
