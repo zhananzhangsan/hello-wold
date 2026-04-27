@@ -8,6 +8,7 @@ docker pull  path || '/dm/v/242cf53b5bdb","/dm24b4b1e1","/dm24b4b1e2"
     ARGO_PORT || 8080
 
 docker pull ghcr.io/zhananzhangsan/2048:latest 
+path || UUID.slice(0, 8);       // 无需设置路径,自动获取uuid前8位
 PaaS 平台设置的环境变量
   | 变量名        | 是否必须 | 默认值 | 备注 |
   | ------------ | ------ | ------ | ------ |
