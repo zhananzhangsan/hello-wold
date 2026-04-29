@@ -1,4 +1,4 @@
-docker pull  path || '/dm/v/242cf53b5bdb","/dm24b4b1e1","/dm24b4b1e2"
+docker pull  path || '/dm242cf5","/dm24b4b1e1","/dm24b4b1e2"
   ghcr.io/zhananzhangsan/argonode:latest
     SUB_PATH || 'sub';       
     PORT || 3000;      
@@ -48,7 +48,7 @@ function getRandomArray(array) {
 }
 ```
   docker.io/blug/argo-x:latest 
-  path='/dm/v/242cf53b5bdb","/dm24b4b1e1","/dm24b4b1e2","/dm24b4b1e3"
+  path='/dm242cf5","/dm24b4b1e1","/dm24b4b1e2","/dm24b4b1e3"
     PORT || 3000;      
     UUID || ''; 
     ARGO_DOMAIN || '';         
