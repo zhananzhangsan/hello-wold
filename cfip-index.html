@@ -1,86 +1,964 @@
-<!DOCTYPE html>
-<script src="https://cdn.jsdelivr.net/npm/translate.js@latest"></script>
-<script>
-  translate.init({
-    target: navigator.language.split('-')[0],  
-    cache: true                                
-  })
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IP 端口测速工具</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f5f7fb;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif}
-.container{max-width:1200px;margin:0 auto;padding:30px 16px}
-.header{margin-bottom:24px}
-.header h1{margin:0 0 8px;font-size:30px;color:#111827}
-.header p{margin:0;color:#6b7280;font-size:14px}
-.card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:22px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.04)}
-.title{font-size:18px;font-weight:700;margin-bottom:18px}
-.grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
-.form-item{margin-bottom:16px}
-label{display:block;margin-bottom:7px;font-size:14px;font-weight:600;color:#374151}
-input,textarea{width:100%;border:1px solid #d1d5db;border-radius:9px;padding:11px 13px;background:#fff;color:#111827;font-size:14px;outline:none;transition:.2s}
-input:focus,textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-textarea{height:180px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-.buttons{display:flex;gap:10px;flex-wrap:wrap}
-button{border:0;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
-.primary{background:#2563eb;color:#fff}
-.primary:hover{background:#1d4ed8}
-.primary:disabled{background:#93c5fd;cursor:not-allowed}
-.danger{background:#fee2e2;color:#b91c1c}
-.danger:hover{background:#fecaca}
-.secondary{background:#f3f4f6;color:#374151}
-.secondary:hover{background:#e5e7eb}
-.status{display:none;margin-top:15px;padding:11px 13px;border-radius:9px;font-size:13px;background:#f3f4f6;color:#4b5563}
-.status.show{display:block}
-.status.success{background:#ecfdf5;color:#047857}
-.status.error{background:#fef2f2;color:#b91c1c}
-.progress{display:none;height:6px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin-top:15px}
-.progress.show{display:block}
-.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#2563eb,#60a5fa);transition:width .25s}
-.result-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.count{font-size:13px;color:#6b7280}
-.table-wrap{width:100%;overflow-x:auto}
-table{width:100%;min-width:900px;border-collapse:collapse}
-thead{background:#f9fafb}
-th,td{padding:13px 12px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;white-space:nowrap}
-th{font-weight:650;color:#4b5563}
-.ip{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-weight:700;color:#111827}
-.speed{font-weight:700;color:#2563eb}
-.fast{color:#059669}
-.medium{color:#d97706}
-.slow{color:#dc2626}
-.success{color:#059669}
-.failed{color:#dc2626}
-.testing{color:#d97706}
-.empty{text-align:center;color:#9ca3af;padding:45px 20px}
-.tip{padding:13px 15px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:9px;font-size:13px;line-height:1.7;margin-bottom:20px}
-.small{font-size:12px;color:#9ca3af;margin-top:7px}
-@media(max-width:700px){
-.container{padding:18px 10px}
-.header h1{font-size:24px}
-.card{padding:16px}
-.grid{grid-template-columns:1fr}
-.result-top{align-items:flex-start;gap:10px;flex-direction:column}
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP 端口测速工具</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            background: #f5f7fb;
+            color: #1f2937;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "PingFang SC",
+                "Microsoft YaHei",
+                Arial,
+                sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, .04);
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+        }
+
+        textarea {
+            height: 180px;
+            resize: vertical;
+            font-family: monospace;
+        }
+
+        .form-item {
+            margin-bottom: 16px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .primary {
+            color: white;
+            background: #2563eb;
+        }
+
+        .primary:hover {
+            background: #1d4ed8;
+        }
+
+        .primary:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        .danger {
+            color: #b91c1c;
+            background: #fee2e2;
+        }
+
+        .secondary {
+            color: #374151;
+            background: #f3f4f6;
+        }
+
+        .status {
+            display: none;
+            margin-top: 15px;
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 13px;
+            background: #f3f4f6;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            color: #047857;
+            background: #ecfdf5;
+        }
+
+        .status.error {
+            color: #b91c1c;
+            background: #fef2f2;
+        }
+
+        .progress {
+            display: none;
+        height: 6px;
+        margin-top: 15px;
+        overflow: hidden;
+        background: #e5e7eb;
+        border-radius: 10px;
+    }
+
+    .progress.show {
+        display: block;
+    }
+
+    .progress-bar {
+        width: 0;
+        height: 100%;
+        background: #2563eb;
+        transition: width .3s;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        min-width: 850px;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 13px 10px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 13px;
+    }
+
+    th {
+        background: #f9fafb;
+        color: #4b5563;
+    }
+
+    .ip {
+        font-family: monospace;
+        font-weight: 700;
+    }
+
+    .speed {
+        font-weight: 700;
+        color: #2563eb;
+    }
+
+    .success {
+        color: #059669;
+    }
+
+    .failed {
+        color: #dc2626;
+    }
+
+    .testing {
+        color: #d97706;
+    }
+
+    .empty {
+        text-align: center;
+        padding: 40px;
+        color: #9ca3af;
+    }
+
+    .tip {
+        padding: 13px 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border: 1px solid #fde68a;
+        background: #fffbeb;
+        color: #92400e;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 700px) {
+        body {
+            padding: 15px 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .card {
+            padding: 16px;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
-</head>
-<body>
-<div class="container">
-<div class="header">
 <h1>IP 端口测速工具</h1>
-<p>输入 IP、端口和自定义测速地址，查看测速结果、ASN 和 IP 归属地。</p>
+
+<div class="subtitle">
+    输入 IP 和端口，使用自定义测速地址进行测速，并查询 ASN 与 IP 归属地。
 </div>
 
 <div class="tip">
-测速地址需要支持跨域访问（CORS）。浏览器本身不能直接建立任意 TCP/UDP 连接，因此纯前端版本的测速采用 HTTP/HTTPS 请求方式。
+    <b>使用说明：</b><br>
+    1. 每行输入一个 IP，例如 1.1.1.1<br>
+    2. 也可以直接输入 IP:端口，例如 1.1.1.1:443<br>
+    3. 自定义测速地址需要支持 HTTP/HTTPS<br>
+    4. 如果浏览器直接打开 index.html，部分跨域测速功能可能受到浏览器 CORS 限制
 </div>
 
 <div class="card">
-<div class="title">测速配置</div>
 
-<div class="form-item">
-<label for="speedUrl">自定义测速地址</label>
-<input id="speedUrl" type="text" value="https://speed.cloudflare.com/__down?bytes=10000000" placeholder="https://example.com/test.bin">
+    <div class="title">
+        测速设置
+    </div>
+
+    <div class="form-item">
+        <label>自定义测速地址</label>
+
+        <input
+            id="speedUrl"
+            value="https://speed.cloudflare.com/__down?bytes=10000000"
+            placeholder="https://example.com/test.bin"
+        >
+    </div>
+
+    <div class="grid">
+
+        <div class="form-item">
+            <label>IP 地址</label>
+
+            <textarea
+                id="ipList"
+                placeholder="例如：
+1.1.1.1
+8.8.8.8
+1.1.1.1:443
+8.8.8.8:443"
+>
+
+        <div class="form-item">
+            <label>默认端口</label>
+
+            <input
+                id="defaultPort"
+                type="number"
+                value="443"
+                min="1"
+                max="65535"
+            >
+        </div>
+
+    </div>
+
+    <div class="buttons">
+
+        <button
+            id="startBtn"
+            class="primary"
+            onclick="startTest()"
+        >
+            开始测速
+        </button>
+
+        <button
+            id="stopBtn"
+            class="danger"
+            onclick="stopTest()"
+            disabled
+        >
+            停止测速
+        </button>
+
+        <button
+            class="secondary"
+            onclick="clearAll()"
+        >
+            清空
+        </button>
+
+    </div>
+    <div id="status" class="status"></div>
+
+    <div id="progress" class="progress">
+        <div
+            id="progressBar"
+            class="progress-bar"
+        ></div>
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="title">
+        测速结果
+    </div>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>IP:端口</th>
+                    <th>速度</th>
+                    <th>ASN</th>
+                    <th>ASN 组织</th>
+                    <th>归属地</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+
+            <tbody id="results">
+
+                <tr>
+                    <td
+                        colspan="6"
+                        class="empty"
+                    >
+                        暂无结果
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+        };
+
+    }
+
+
+    return {
+
+        asn:
+            data.connection &&
+            data.connection.asn
+                ? "AS" +
+                  data.connection.asn
+                : "-",
+
+        org:
+            data.connection &&
+            data.connection.org
+                ? data.connection.org
+                : "-",
+
+        location:
+            [
+                data.country,
+                data.region,
+                data.city
+            ]
+            .filter(Boolean)
+            .join(" / ") || "-"
+
+    };
+
+} catch (e) {
+
+    return {
+        asn: "-",
+        org: "-",
+        location: "-"
+    };
+
+}
+}
+
+/*
+
+- 生成测试 URL
+- 
+- 注意：
+- 这里保留用户填写的测速地址。
+- 
+- 例如：
+- 
+- https://speed.cloudflare.com/__down?bytes=10000000
+- 
+- 浏览器会直接访问这个测速地址。
+*/
+function createSpeedUrl(baseUrl) {
+let url;
+try {
+url = new URL(baseUrl);
+} catch (e) {
+throw new Error("测速地址格式错误");
+}
+if (
+url.protocol !== "http:" &&
+url.protocol !== "https:"
+) {
+throw new Error(
+"测速地址必须是 HTTP 或 HTTPS"
+);
+}
+/*
+  - 防止缓存
+*/
+url.searchParams.set(
+"_speedtest",
+Date.now().toString()
+);
+return url.toString();
+}
+
+/*
+
+- 执行测速
+- 
+- 注意：
+- 浏览器测速的是“测速 URL”的下载速度。
+- 
+- 浏览器无法直接建立任意 TCP socket。
+*/
+async function downloadTest(
+url,
+timeoutSeconds
+) {
+const controller =
+new AbortController();
+const timeout =
+setTimeout(
+() => controller.abort(),
+timeoutSeconds * 1000
+);
+const start =
+performance.now();
+let bytes = 0;
+try {
+ const response =
+     await fetch(
+         url,
+         {
+             method: "GET",
+             cache: "no-store",
+             mode: "cors",
+             signal: controller.signal
+         }
+     );
+
+
+ if (!response.ok) {
+
+     throw new Error(
+         "HTTP " +
+         response.status
+     );
+
+ }
+
+
+ /*
+  * 流式读取
+  */
+ if (response.body) {
+
+     const reader =
+         response.body.getReader();
+
+
+     while (true) {
+
+         if (stopFlag) {
+
+             await reader.cancel();
+
+             throw new Error(
+                 "测速已停止"
+             );
+
+         }
+
+
+         const result =
+             await reader.read();
+
+
+         if (result.done) {
+             break;
+         }
+
+
+         if (result.value) {
+             bytes +=
+                 result.value.byteLength;
+         }
+
+     }
+
+ } else {
+
+     const buffer =
+         await response.arrayBuffer();
+
+     bytes =
+         buffer.byteLength;
+
+ }
+
+
+ clearTimeout(timeout);
+
+
+ const seconds =
+     (performance.now() - start) /
+     1000;
+
+
+ return {
+     bytes,
+     seconds
+ };
+} catch (error) {
+ clearTimeout(timeout);
+
+ if (
+     error.name === "AbortError"
+ ) {
+
+     throw new Error(
+         "连接超时"
+     );
+
+ }
+
+ throw error;
+}
+
+}
+
+/*
+
+- 更新进度条
+*/
+function updateProgress(
+current,
+total
+) {
+const bar =
+document.getElementById(
+"progressBar"
+);
+if (!total) {
+ bar.style.width =
+     "0%";
+
+ return;
+}
+const percent =
+Math.round(
+current /
+total *
+100
+);
+bar.style.width =
+percent + "%";
+}
+
+/*
+
+- 添加结果行
+*/
+function addResult(
+address,
+info
+) {
+
+const tbody =
+    document.getElementById(
+        "results"
+    );
+
+
+/*
+ * 第一次添加时删除“暂无结果”
+ */
+const empty =
+    tbody.querySelector(".empty");
+
+if (empty) {
+    tbody.innerHTML = "";
+}
+
+
+const tr =
+    document.createElement("tr");
+
+
+tr.innerHTML = `
+    <td class="ip">
+        ${escapeHtml(address)}
+    </td>
+
+    <td class="speed">
+        ${escapeHtml(info.speed)}
+    </td>
+
+    <td>
+        ${escapeHtml(info.asn)}
+    </td>
+
+    <td>
+        ${escapeHtml(info.org)}
+    </td>
+
+    <td>
+        ${escapeHtml(info.location)}
+    </td>
+
+    <td class="${info.success ? "success" : "failed"}">
+        ${escapeHtml(info.status)}
+    </td>
+`;
+
+
+tbody.appendChild(tr);
+}
+
+/*
+
+- 开始测速
+*/
+async function startTest() {
+stopFlag = false;
+const speedUrl =
+document.getElementById(
+"speedUrl"
+).value.trim();
+const ipText =
+document.getElementById(
+"ipList"
+).value.trim();
+const defaultPort =
+Number(
+document.getElementById(
+"defaultPort"
+).value
+);
+if (!speedUrl) {
+ showStatus(
+     "请输入测速地址",
+     "error"
+ );
+
+ return;
+}
+if (!ipText) {
+ showStatus(
+     "请输入 IP",
+     "error"
+ );
+
+ return;
+}
+if (
+!Number.isInteger(defaultPort) ||
+defaultPort < 1 ||
+defaultPort > 65535
+) {
+ showStatus(
+     "默认端口不正确",
+     "error"
+ );
+
+ return;
+}
+/*
+  - 验证测速 URL
+*/
+try {
+createSpeedUrl(speedUrl);
+} catch (e) {
+ showStatus(
+     e.message,
+     "error"
+ );
+
+ return;
+}
+const lines =
+ipText
+.split(/\r?\n/)
+.map(x => x.trim())
+.filter(Boolean);
+const targets = [];
+for (const line of lines) {
+ const target =
+     parseAddress(
+         line,
+         defaultPort
+     );
+
+
+ if (target) {
+     targets.push(target);
+ }
+}
+if (!targets.length) {
+ showStatus(
+     "没有找到有效 IP",
+     "error"
+ );
+
+ return;
+}
+/*
+  - 清空之前结果
+*/
+document.getElementById(
+"results"
+).innerHTML = "";
+document.getElementById(
+"startBtn"
+).disabled = true;
+document.getElementById(
+"stopBtn"
+).disabled = false;
+document.getElementById(
+"progress"
+).classList.add("show");
+/*
+  - 逐个测试
+*/
+for (
+let i = 0;
+i < targets.length;
+i++
+) {
+if (stopFlag) {
+break;
+}
+const target =
+targets[i];
+const address =
+target.ip +
+":" +
+target.port;
+showStatus(
+"正在测试 " +
+address +
+" (" +
+(i + 1) +
+"/" +
+targets.length +
+")"
+);
+/*
+    - 查询 ASN
+*/
+const infoPromise =
+getIpInfo(
+target.ip
+);
+let speed = "-";
+let success = false;
+let status = "失败";
+try {
+ /*
+  * 当前浏览器版本：
+  * 使用用户指定的测速地址。
+  */
+ const url =
+     createSpeedUrl(
+         speedUrl
+     );
+
+
+ const result =
+     await downloadTest(
+         url,
+         15
+     );
+
+
+ speed =
+     formatSpeed(
+         result.bytes,
+         result.seconds
+     );
+        success = true;
+        status = "成功";
+
+
+    } catch (error) {
+
+        status =
+            error.message ||
+            "测速失败";
+
+    }
+
+
+    const ipInfo =
+        await infoPromise;
+
+
+    addResult(
+        address,
+        {
+
+            speed,
+
+            asn:
+                ipInfo.asn,
+
+            org:
+                ipInfo.org,
+
+            location:
+                ipInfo.location,
+
+            success,
+
+            status
+
+        }
+    );
+
+
+    updateProgress(
+        i + 1,
+        targets.length
+    );
+
+}
+
+
+document.getElementById(
+    "startBtn"
+).disabled = false;
+
+
+document.getElementById(
+    "stopBtn"
+).disabled = true;
+
+
+if (stopFlag) {
+
+    showStatus(
+        "测速已停止",
+        "error"
+    );
+
+} else {
+
+    showStatus(
+        "测速完成",
+        "success"
+    );
+
+}
+}
+
+/*
+
+- 停止测速
+*/
+function stopTest() {
+stopFlag = true;
+showStatus(
+"正在停止...",
+"error"
+);
+
+}
+
+/*
+
+- 清空
+*/
+function clearAll() {
+stopFlag = true;
+document.getElementById(
+"results"
+).innerHTML = <tr>
+<td
+colspan="6"
+class="empty"
+>
+暂无结果
+</td>
+</tr>;
+document.getElementById(
+"progressBar"
+).style.width = "0%";
+document.getElementById(
+"progress"
+).classList.remove("show");
+document.getElementById(
+"status"
+).className = "status";
+
+}
