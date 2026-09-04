@@ -1,4 +1,10 @@
 <html lang="zh-CN">
+<script src="https://cdn.jsdelivr.net/npm/translate.js@latest"></script>
+<script>
+  translate.init({
+    target: navigator.language.split('-')[0],  
+    cache: true                                
+  })
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -159,806 +165,499 @@
 
         .progress {
             display: none;
-        height: 6px;
-        margin-top: 15px;
-        overflow: hidden;
-        background: #e5e7eb;
-        border-radius: 10px;
-    }
-
-    .progress.show {
-        display: block;
-    }
-
-    .progress-bar {
-        width: 0;
-        height: 100%;
-        background: #2563eb;
-        transition: width .3s;
-    }
-
-    .table-wrap {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        min-width: 850px;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        padding: 13px 10px;
-        text-align: left;
-        border-bottom: 1px solid #e5e7eb;
-        font-size: 13px;
-    }
-
-    th {
-        background: #f9fafb;
-        color: #4b5563;
-    }
-
-    .ip {
-        font-family: monospace;
-        font-weight: 700;
-    }
-
-    .speed {
-        font-weight: 700;
-        color: #2563eb;
-    }
-
-    .success {
-        color: #059669;
-    }
-
-    .failed {
-        color: #dc2626;
-    }
-
-    .testing {
-        color: #d97706;
-    }
-
-    .empty {
-        text-align: center;
-        padding: 40px;
-        color: #9ca3af;
-    }
-
-    .tip {
-        padding: 13px 15px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        border: 1px solid #fde68a;
-        background: #fffbeb;
-        color: #92400e;
-        font-size: 13px;
-        line-height: 1.7;
-    }
-
-    @media (max-width: 700px) {
-        body {
-            padding: 15px 10px;
+            height: 6px;
+            margin-top: 15px;
+            overflow: hidden;
+            background: #e5e7eb;
+            border-radius: 10px;
         }
 
-        h1 {
-            font-size: 24px;
+        .progress.show {
+            display: block;
         }
 
-        .card {
-            padding: 16px;
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background: #2563eb;
+            transition: width .3s;
         }
 
-        .grid {
-            grid-template-columns: 1fr;
+        .table-wrap {
+            overflow-x: auto;
         }
-    }
-</style>
-<h1>IP 端口测速工具</h1>
 
-<div class="subtitle">
-    输入 IP 和端口，使用自定义测速地址进行测速，并查询 ASN 与 IP 归属地。
-</div>
+        table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
 
-<div class="tip">
-    <b>使用说明：</b><br>
-    1. 每行输入一个 IP，例如 1.1.1.1<br>
-    2. 也可以直接输入 IP:端口，例如 1.1.1.1:443<br>
-    3. 自定义测速地址需要支持 HTTP/HTTPS<br>
-    4. 如果浏览器直接打开 index.html，部分跨域测速功能可能受到浏览器 CORS 限制
-</div>
+        th,
+        td {
+            padding: 13px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+        }
 
-<div class="card">
+        th {
+            background: #f9fafb;
+            color: #4b5563;
+        }
 
-    <div class="title">
-        测速设置
+        .ip {
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .speed {
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .success {
+            color: #059669;
+        }
+
+        .failed {
+            color: #dc2626;
+        }
+
+        .testing {
+            color: #d97706;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+        }
+
+        .tip {
+            padding: 13px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #fde68a;
+            background: #fffbeb;
+            color: #92400e;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>IP 端口测速工具</h1>
+
+    <div class="subtitle">
+        输入 IP 和端口，使用自定义测速地址进行测速，并查询 ASN 与 IP 归属地。
     </div>
 
-    <div class="form-item">
-        <label>自定义测速地址</label>
-
-        <input
-            id="speedUrl"
-            value="https://speed.cloudflare.com/__down?bytes=10000000"
-            placeholder="https://example.com/test.bin"
-        >
+    <div class="tip">
+        <b>使用说明：</b><br>
+        1. 每行输入一个 IP，例如 1.1.1.1<br>
+        2. 也可以直接输入 IP:端口，例如 1.1.1.1:443<br>
+        3. 自定义测速地址需要支持 HTTP/HTTPS<br>
+        4. 如果浏览器直接打开 index.html，部分跨域测速功能可能受到浏览器 CORS 限制
     </div>
 
-    <div class="grid">
+    <div class="card">
+        <div class="title">
+            测速设置
+        </div>
 
         <div class="form-item">
-            <label>IP 地址</label>
+            <label>自定义测速地址</label>
+            <input
+                id="speedUrl"
+                value="https://speed.cloudflare.com/__down?bytes=10000000"
+                placeholder="https://example.com/test.bin"
+            >
+        </div>
 
-            <textarea
-                id="ipList"
-                placeholder="例如：
+        <div class="grid">
+            <div class="form-item">
+                <label>IP 地址</label>
+                <textarea
+                    id="ipList"
+                    placeholder="例如：
 1.1.1.1
 8.8.8.8
 1.1.1.1:443
 8.8.8.8:443"
->
+                ></textarea>
+            </div>
 
-        <div class="form-item">
-            <label>默认端口</label>
-
-            <input
-                id="defaultPort"
-                type="number"
-                value="443"
-                min="1"
-                max="65535"
-            >
+            <div class="form-item">
+                <label>默认端口</label>
+                <input
+                    id="defaultPort"
+                    type="number"
+                    value="443"
+                    min="1"
+                    max="65535"
+                >
+            </div>
         </div>
 
+        <div class="buttons">
+            <button
+                id="startBtn"
+                class="primary"
+                onclick="startTest()"
+            >
+                开始测速
+            </button>
+
+            <button
+                id="stopBtn"
+                class="danger"
+                onclick="stopTest()"
+                disabled
+            >
+                停止测速
+            </button>
+
+            <button
+                class="secondary"
+                onclick="clearAll()"
+            >
+                清空
+            </button>
+        </div>
+        <div id="status" class="status"></div>
+
+        <div id="progress" class="progress">
+            <div
+                id="progressBar"
+                class="progress-bar"
+            ></div>
+        </div>
     </div>
 
-    <div class="buttons">
+    <div class="card">
+        <div class="title">
+            测速结果
+        </div>
 
-        <button
-            id="startBtn"
-            class="primary"
-            onclick="startTest()"
-        >
-            开始测速
-        </button>
-
-        <button
-            id="stopBtn"
-            class="danger"
-            onclick="stopTest()"
-            disabled
-        >
-            停止测速
-        </button>
-
-        <button
-            class="secondary"
-            onclick="clearAll()"
-        >
-            清空
-        </button>
-
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>IP:端口</th>
+                        <th>速度</th>
+                        <th>ASN</th>
+                        <th>ASN 组织</th>
+                        <th>归属地</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                    <tr>
+                        <td
+                            colspan="6"
+                            class="empty"
+                        >
+                            暂无结果
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div id="status" class="status"></div>
-
-    <div id="progress" class="progress">
-        <div
-            id="progressBar"
-            class="progress-bar"
-        ></div>
-    </div>
-
 </div>
 
+<script>
+let stopFlag = false;
 
-<div class="card">
+function showStatus(message, type = "") {
+    const statusEl = document.getElementById("status");
+    statusEl.textContent = message;
+    statusEl.className = "status show " + type;
+}
 
-    <div class="title">
-        测速结果
-    </div>
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-    <div class="table-wrap">
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>IP:端口</th>
-                    <th>速度</th>
-                    <th>ASN</th>
-                    <th>ASN 组织</th>
-                    <th>归属地</th>
-                    <th>状态</th>
-                </tr>
-            </thead>
-
-            <tbody id="results">
-
-                <tr>
-                    <td
-                        colspan="6"
-                        class="empty"
-                    >
-                        暂无结果
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-        };
-
+function formatSpeed(bytes, seconds) {
+    if (seconds <= 0) return "0 KB/s";
+    const bits = bytes * 8;
+    const bps = bits / seconds;
+    if (bps >= 1024 * 1024 * 1024) {
+        return (bps / (1024 * 1024 * 1024)).toFixed(2) + " Gbps";
+    } else if (bps >= 1024 * 1024) {
+        return (bps / (1024 * 1024)).toFixed(2) + " Mbps";
+    } else if (bps >= 1024) {
+        return (bps / 1024).toFixed(2) + " Kbps";
+    } else {
+        return bps.toFixed(2) + " bps";
     }
-
-
-    return {
-
-        asn:
-            data.connection &&
-            data.connection.asn
-                ? "AS" +
-                  data.connection.asn
-                : "-",
-
-        org:
-            data.connection &&
-            data.connection.org
-                ? data.connection.org
-                : "-",
-
-        location:
-            [
-                data.country,
-                data.region,
-                data.city
-            ]
-            .filter(Boolean)
-            .join(" / ") || "-"
-
-    };
-
-} catch (e) {
-
-    return {
-        asn: "-",
-        org: "-",
-        location: "-"
-    };
-
-}
 }
 
-/*
-
-- 生成测试 URL
-- 
-- 注意：
-- 这里保留用户填写的测速地址。
-- 
-- 例如：
-- 
-- https://speed.cloudflare.com/__down?bytes=10000000
-- 
-- 浏览器会直接访问这个测速地址。
-*/
-function createSpeedUrl(baseUrl) {
-let url;
-try {
-url = new URL(baseUrl);
-} catch (e) {
-throw new Error("测速地址格式错误");
-}
-if (
-url.protocol !== "http:" &&
-url.protocol !== "https:"
-) {
-throw new Error(
-"测速地址必须是 HTTP 或 HTTPS"
-);
-}
-/*
-  - 防止缓存
-*/
-url.searchParams.set(
-"_speedtest",
-Date.now().toString()
-);
-return url.toString();
-}
-
-/*
-
-- 执行测速
-- 
-- 注意：
-- 浏览器测速的是“测速 URL”的下载速度。
-- 
-- 浏览器无法直接建立任意 TCP socket。
-*/
-async function downloadTest(
-url,
-timeoutSeconds
-) {
-const controller =
-new AbortController();
-const timeout =
-setTimeout(
-() => controller.abort(),
-timeoutSeconds * 1000
-);
-const start =
-performance.now();
-let bytes = 0;
-try {
- const response =
-     await fetch(
-         url,
-         {
-             method: "GET",
-             cache: "no-store",
-             mode: "cors",
-             signal: controller.signal
-         }
-     );
-
-
- if (!response.ok) {
-
-     throw new Error(
-         "HTTP " +
-         response.status
-     );
-
- }
-
-
- /*
-  * 流式读取
-  */
- if (response.body) {
-
-     const reader =
-         response.body.getReader();
-
-
-     while (true) {
-
-         if (stopFlag) {
-
-             await reader.cancel();
-
-             throw new Error(
-                 "测速已停止"
-             );
-
-         }
-
-
-         const result =
-             await reader.read();
-
-
-         if (result.done) {
-             break;
-         }
-
-
-         if (result.value) {
-             bytes +=
-                 result.value.byteLength;
-         }
-
-     }
-
- } else {
-
-     const buffer =
-         await response.arrayBuffer();
-
-     bytes =
-         buffer.byteLength;
-
- }
-
-
- clearTimeout(timeout);
-
-
- const seconds =
-     (performance.now() - start) /
-     1000;
-
-
- return {
-     bytes,
-     seconds
- };
-} catch (error) {
- clearTimeout(timeout);
-
- if (
-     error.name === "AbortError"
- ) {
-
-     throw new Error(
-         "连接超时"
-     );
-
- }
-
- throw error;
-}
-
-}
-
-/*
-
-- 更新进度条
-*/
-function updateProgress(
-current,
-total
-) {
-const bar =
-document.getElementById(
-"progressBar"
-);
-if (!total) {
- bar.style.width =
-     "0%";
-
- return;
-}
-const percent =
-Math.round(
-current /
-total *
-100
-);
-bar.style.width =
-percent + "%";
-}
-
-/*
-
-- 添加结果行
-*/
-function addResult(
-address,
-info
-) {
-
-const tbody =
-    document.getElementById(
-        "results"
-    );
-
-
-/*
- * 第一次添加时删除“暂无结果”
- */
-const empty =
-    tbody.querySelector(".empty");
-
-if (empty) {
-    tbody.innerHTML = "";
-}
-
-
-const tr =
-    document.createElement("tr");
-
-
-tr.innerHTML = `
-    <td class="ip">
-        ${escapeHtml(address)}
-    </td>
-
-    <td class="speed">
-        ${escapeHtml(info.speed)}
-    </td>
-
-    <td>
-        ${escapeHtml(info.asn)}
-    </td>
-
-    <td>
-        ${escapeHtml(info.org)}
-    </td>
-
-    <td>
-        ${escapeHtml(info.location)}
-    </td>
-
-    <td class="${info.success ? "success" : "failed"}">
-        ${escapeHtml(info.status)}
-    </td>
-`;
-
-
-tbody.appendChild(tr);
-}
-
-/*
-
-- 开始测速
-*/
-async function startTest() {
-stopFlag = false;
-const speedUrl =
-document.getElementById(
-"speedUrl"
-).value.trim();
-const ipText =
-document.getElementById(
-"ipList"
-).value.trim();
-const defaultPort =
-Number(
-document.getElementById(
-"defaultPort"
-).value
-);
-if (!speedUrl) {
- showStatus(
-     "请输入测速地址",
-     "error"
- );
-
- return;
-}
-if (!ipText) {
- showStatus(
-     "请输入 IP",
-     "error"
- );
-
- return;
-}
-if (
-!Number.isInteger(defaultPort) ||
-defaultPort < 1 ||
-defaultPort > 65535
-) {
- showStatus(
-     "默认端口不正确",
-     "error"
- );
-
- return;
-}
-/*
-  - 验证测速 URL
-*/
-try {
-createSpeedUrl(speedUrl);
-} catch (e) {
- showStatus(
-     e.message,
-     "error"
- );
-
- return;
-}
-const lines =
-ipText
-.split(/\r?\n/)
-.map(x => x.trim())
-.filter(Boolean);
-const targets = [];
-for (const line of lines) {
- const target =
-     parseAddress(
-         line,
-         defaultPort
-     );
-
-
- if (target) {
-     targets.push(target);
- }
-}
-if (!targets.length) {
- showStatus(
-     "没有找到有效 IP",
-     "error"
- );
-
- return;
-}
-/*
-  - 清空之前结果
-*/
-document.getElementById(
-"results"
-).innerHTML = "";
-document.getElementById(
-"startBtn"
-).disabled = true;
-document.getElementById(
-"stopBtn"
-).disabled = false;
-document.getElementById(
-"progress"
-).classList.add("show");
-/*
-  - 逐个测试
-*/
-for (
-let i = 0;
-i < targets.length;
-i++
-) {
-if (stopFlag) {
-break;
-}
-const target =
-targets[i];
-const address =
-target.ip +
-":" +
-target.port;
-showStatus(
-"正在测试 " +
-address +
-" (" +
-(i + 1) +
-"/" +
-targets.length +
-")"
-);
-/*
-    - 查询 ASN
-*/
-const infoPromise =
-getIpInfo(
-target.ip
-);
-let speed = "-";
-let success = false;
-let status = "失败";
-try {
- /*
-  * 当前浏览器版本：
-  * 使用用户指定的测速地址。
-  */
- const url =
-     createSpeedUrl(
-         speedUrl
-     );
-
-
- const result =
-     await downloadTest(
-         url,
-         15
-     );
-
-
- speed =
-     formatSpeed(
-         result.bytes,
-         result.seconds
-     );
-        success = true;
-        status = "成功";
-
-
-    } catch (error) {
-
-        status =
-            error.message ||
-            "测速失败";
-
-    }
-
-
-    const ipInfo =
-        await infoPromise;
-
-
-    addResult(
-        address,
-        {
-
-            speed,
-
-            asn:
-                ipInfo.asn,
-
-            org:
-                ipInfo.org,
-
-            location:
-                ipInfo.location,
-
-            success,
-
-            status
-
+function parseAddress(line, defaultPort) {
+    let ip = line;
+    let port = defaultPort;
+    
+    if (line.startsWith("[")) {
+        const match = line.match(/^\[(.+?)\]:(\d+)$/);
+        if (match) {
+            ip = match[1];
+            port = Number(match[2]);
+        } else {
+            const matchIpOnly = line.match(/^\[(.+?)\]$/);
+            if (matchIpOnly) {
+                ip = matchIpOnly[1];
+            }
         }
-    );
-
-
-    updateProgress(
-        i + 1,
-        targets.length
-    );
-
+    } else {
+        const lastColonIndex = line.lastIndexOf(":");
+        if (lastColonIndex !== -1 && line.indexOf(":") === lastColonIndex) {
+            const possibleIp = line.substring(0, lastColonIndex);
+            const possiblePort = Number(line.substring(lastColonIndex + 1));
+            if (!isNaN(possiblePort) && possiblePort >= 1 && possiblePort <= 65535) {
+                ip = possibleIp;
+                port = possiblePort;
+            }
+        }
+    }
+    return { ip, port };
 }
 
-
-document.getElementById(
-    "startBtn"
-).disabled = false;
-
-
-document.getElementById(
-    "stopBtn"
-).disabled = true;
-
-
-if (stopFlag) {
-
-    showStatus(
-        "测速已停止",
-        "error"
-    );
-
-} else {
-
-    showStatus(
-        "测速完成",
-        "success"
-    );
-
-}
+async function getIpInfo(ip) {
+    try {
+        const response = await fetch(`https://ipapi.co/${ip}/json/`);
+        if (!response.ok) throw new Error();
+        const data = await response.json();
+        return {
+            asn: data.asn ? "AS" + data.asn : "-",
+            org: data.org || "-",
+            location: [data.country_name, data.region, data.city].filter(Boolean).join(" / ") || "-"
+        };
+    } catch (e) {
+        return {
+            asn: "-",
+            org: "-",
+            location: "-"
+        };
+    }
 }
 
-/*
+function createSpeedUrl(baseUrl) {
+    let url;
+    try {
+        url = new URL(baseUrl);
+    } catch (e) {
+        throw new Error("测速地址格式错误");
+    }
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+        throw new Error("测速地址必须是 HTTP 或 HTTPS");
+    }
+    url.searchParams.set("_speedtest", Date.now().toString());
+    return url.toString();
+}
 
-- 停止测速
-*/
+async function downloadTest(url, timeoutSeconds) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutSeconds * 1000);
+    const start = performance.now();
+    let bytes = 0;
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            cache: "no-store",
+            mode: "cors",
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        if (response.body) {
+            const reader = response.body.getReader();
+            while (true) {
+                if (stopFlag) {
+                    await reader.cancel();
+                    throw new Error("测速已停止");
+                }
+                const result = await reader.read();
+                if (result.done) break;
+                if (result.value) {
+                    bytes += result.value.byteLength;
+                }
+            }
+        } else {
+            const buffer = await response.arrayBuffer();
+            bytes = buffer.byteLength;
+        }
+
+        clearTimeout(timeout);
+        const seconds = (performance.now() - start) / 1000;
+        return { bytes, seconds };
+    } catch (error) {
+        clearTimeout(timeout);
+        if (error.name === "AbortError") {
+            throw new Error("连接超时");
+        }
+        throw error;
+    }
+}
+
+function updateProgress(current, total) {
+    const bar = document.getElementById("progressBar");
+    if (!total) {
+        bar.style.width = "0%";
+        return;
+    }
+    const percent = Math.round(current / total * 100);
+    bar.style.width = percent + "%";
+}
+
+function addResult(address, info) {
+    const tbody = document.getElementById("results");
+    const empty = tbody.querySelector(".empty");
+    if (empty) {
+        tbody.innerHTML = "";
+    }
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+        <td class="ip">${escapeHtml(address)}</td>
+        <td class="speed">${escapeHtml(info.speed)}</td>
+        <td>${escapeHtml(info.asn)}</td>
+        <td>${escapeHtml(info.org)}</td>
+        <td>${escapeHtml(info.location)}</td>
+        <td class="${info.success ? "success" : "failed"}">${escapeHtml(info.status)}</td>
+    `;
+    tbody.appendChild(tr);
+}
+
+async function startTest() {
+    stopFlag = false;
+    const speedUrl = document.getElementById("speedUrl").value.trim();
+    const ipText = document.getElementById("ipList").value.trim();
+    const defaultPort = Number(document.getElementById("defaultPort").value);
+
+    if (!speedUrl) {
+        showStatus("请输入测速地址", "error");
+        return;
+    }
+    if (!ipText) {
+        showStatus("请输入 IP", "error");
+        return;
+    }
+    if (!Number.isInteger(defaultPort) || defaultPort < 1 || defaultPort > 65535) {
+        showStatus("默认端口不正确", "error");
+        return;
+    }
+
+    try {
+        createSpeedUrl(speedUrl);
+    } catch (e) {
+        showStatus(e.message, "error");
+        return;
+    }
+
+    const lines = ipText.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    const targets = [];
+    for (const line of lines) {
+        const target = parseAddress(line, defaultPort);
+        if (target) {
+            targets.push(target);
+        }
+    }
+
+    if (!targets.length) {
+        showStatus("没有找到有效 IP", "error");
+        return;
+    }
+
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("startBtn").disabled = true;
+    document.getElementById("stopBtn").disabled = false;
+    document.getElementById("progress").classList.add("show");
+
+    for (let i = 0; i < targets.length; i++) {
+        if (stopFlag) break;
+        const target = targets[i];
+        const address = target.ip + ":" + target.port;
+        showStatus("正在测试 " + address + " (" + (i + 1) + "/" + targets.length + ")");
+
+        const infoPromise = getIpInfo(target.ip);
+        let speed = "-";
+        let success = false;
+        let status = "失败";
+
+        try {
+            const url = createSpeedUrl(speedUrl);
+            const result = await downloadTest(url, 15);
+            speed = formatSpeed(result.bytes, result.seconds);
+            success = true;
+            status = "成功";
+        } catch (error) {
+            status = error.message || "测速失败";
+        }
+
+        const ipInfo = await infoPromise;
+        addResult(address, {
+            speed,
+            asn: ipInfo.asn,
+            org: ipInfo.org,
+            location: ipInfo.location,
+            success,
+            status
+        });
+
+        updateProgress(i + 1, targets.length);
+    }
+
+    document.getElementById("startBtn").disabled = false;
+    document.getElementById("stopBtn").disabled = true;
+
+    if (stopFlag) {
+        showStatus("测速已停止", "error");
+    } else {
+        showStatus("测速完成", "success");
+    }
+}
+
 function stopTest() {
-stopFlag = true;
-showStatus(
-"正在停止...",
-"error"
-);
-
+    stopFlag = true;
+    showStatus("正在停止...", "error");
 }
 
-/*
-
-- 清空
-*/
 function clearAll() {
-stopFlag = true;
-document.getElementById(
-"results"
-).innerHTML = <tr>
-<td
-colspan="6"
-class="empty"
->
-暂无结果
-</td>
-</tr>;
-document.getElementById(
-"progressBar"
-).style.width = "0%";
-document.getElementById(
-"progress"
-).classList.remove("show");
-document.getElementById(
-"status"
-).className = "status";
-
+    stopFlag = true;
+    document.getElementById("results").innerHTML = `<tr><td colspan="6" class="empty">暂无结果</td></tr>`;
+    document.getElementById("progressBar").style.width = "0%";
+    document.getElementById("progress").classList.remove("show");
+    document.getElementById("status").className = "status";
 }
+</script>
+</body>
+</html>
