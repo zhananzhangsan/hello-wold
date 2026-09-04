@@ -1,15 +1,15 @@
+<!DOCTYPE html>
 <html lang="zh-CN">
 <script src="https://cdn.jsdelivr.net/npm/translate.js@latest"></script>
 <script>
   translate.init({
-    target: navigator.language.split('-')[0],  
-    cache: true                                
+    target: navigator.language.split('-')[0],  // 自动跟随浏览器语言
+    cache: true                                // 记住用户上次选择
   })
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IP 端口测速工具</title>
-
     <style>
         * {
             box-sizing: border-box;
@@ -20,14 +20,7 @@
             padding: 30px 15px;
             background: #f5f7fb;
             color: #1f2937;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                "PingFang SC",
-                "Microsoft YaHei",
-                Arial,
-                sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
         }
 
         .container {
@@ -59,12 +52,11 @@
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 18px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 180px;
-            gap: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 10px;
         }
 
         label {
@@ -74,8 +66,7 @@
             font-weight: 600;
         }
 
-        input,
-        textarea {
+        input, textarea {
             width: 100%;
             padding: 11px 13px;
             border: 1px solid #d1d5db;
@@ -85,14 +76,13 @@
             background: #fff;
         }
 
-        input:focus,
-        textarea:focus {
+        input:focus, textarea:focus {
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
         }
 
         textarea {
-            height: 180px;
+            height: 140px;
             resize: vertical;
             font-family: monospace;
         }
@@ -101,10 +91,22 @@
             margin-bottom: 16px;
         }
 
+        .form-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-row .form-item {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
         .buttons {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            margin-top: 15px;
         }
 
         button {
@@ -193,8 +195,7 @@
             border-collapse: collapse;
         }
 
-        th,
-        td {
+        th, td {
             padding: 13px 10px;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
@@ -224,10 +225,6 @@
             color: #dc2626;
         }
 
-        .testing {
-            color: #d97706;
-        }
-
         .empty {
             text-align: center;
             padding: 40px;
@@ -249,17 +246,15 @@
             body {
                 padding: 15px 10px;
             }
-
             h1 {
                 font-size: 24px;
             }
-
             .card {
                 padding: 16px;
             }
-
-            .grid {
-                grid-template-columns: 1fr;
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
             }
         }
     </style>
@@ -267,10 +262,7 @@
 <body>
 <div class="container">
     <h1>IP 端口测速工具</h1>
-
-    <div class="subtitle">
-        输入 IP 和端口，使用自定义测速地址进行测速，并查询 ASN 与 IP 归属地。
-    </div>
+    <div class="subtitle">输入 IP 和端口，使用自定义测速地址进行测速，并查询 ASN 与 IP 归属地。</div>
 
     <div class="tip">
         <b>使用说明：</b><br>
@@ -280,34 +272,31 @@
         4. 如果浏览器直接打开 index.html，部分跨域测速功能可能受到浏览器 CORS 限制
     </div>
 
+    <!-- 模块一：自定义测速地址 -->
     <div class="card">
-        <div class="title">
-            测速设置
-        </div>
-
-        <div class="form-item">
-            <label>自定义测速地址</label>
+        <div class="title">1. 自定义测速地址</div>
+        <div class="form-item" style="margin-bottom: 0;">
+            <label>测速 URL (支持 HTTP/HTTPS)</label>
             <input
                 id="speedUrl"
                 value="https://speed.cloudflare.com/__down?bytes=10000000"
                 placeholder="https://example.com/test.bin"
             >
         </div>
+    </div>
 
-        <div class="grid">
+    <!-- 模块二：IP 与端口输入 -->
+    <div class="card">
+        <div class="title">2. IP 及端口配置</div>
+        <div class="form-row">
             <div class="form-item">
-                <label>IP 地址</label>
+                <label>IP 地址列表</label>
                 <textarea
                     id="ipList"
-                    placeholder="例如：
-1.1.1.1
-8.8.8.8
-1.1.1.1:443
-8.8.8.8:443"
+                    placeholder="例如：&#10;1.1.1.1&#10;8.8.8.8&#10;1.1.1.1:443&#10;8.8.8.8:443"
                 ></textarea>
             </div>
-
-            <div class="form-item">
+            <div class="form-item" style="max-width: 200px;">
                 <label>默认端口</label>
                 <input
                     id="defaultPort"
@@ -320,45 +309,20 @@
         </div>
 
         <div class="buttons">
-            <button
-                id="startBtn"
-                class="primary"
-                onclick="startTest()"
-            >
-                开始测速
-            </button>
-
-            <button
-                id="stopBtn"
-                class="danger"
-                onclick="stopTest()"
-                disabled
-            >
-                停止测速
-            </button>
-
-            <button
-                class="secondary"
-                onclick="clearAll()"
-            >
-                清空
-            </button>
+            <button id="startBtn" class="primary" onclick="startTest()">开始测速</button>
+            <button id="stopBtn" class="danger" onclick="stopTest()" disabled>停止测速</button>
+            <button class="secondary" onclick="clearAll()">清空</button>
         </div>
-        <div id="status" class="status"></div>
 
+        <div id="status" class="status"></div>
         <div id="progress" class="progress">
-            <div
-                id="progressBar"
-                class="progress-bar"
-            ></div>
+            <div id="progressBar" class="progress-bar"></div>
         </div>
     </div>
 
+    <!-- 模块三：测速结果 -->
     <div class="card">
-        <div class="title">
-            测速结果
-        </div>
-
+        <div class="title">3. 测速结果展示</div>
         <div class="table-wrap">
             <table>
                 <thead>
@@ -373,12 +337,7 @@
                 </thead>
                 <tbody id="results">
                     <tr>
-                        <td
-                            colspan="6"
-                            class="empty"
-                        >
-                            暂无结果
-                        </td>
+                        <td colspan="6" class="empty">暂无结果</td>
                     </tr>
                 </tbody>
             </table>
