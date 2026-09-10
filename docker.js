@@ -47,7 +47,7 @@ function getRandomArray(array) {
   return array[randomIndex];
 }
 ```
-  docker.io/blug/argo-x:latest 
+  docker.io/blug/argo-x:ws 3000
   path='/dm242cf5","/dm24b4b1e1","/dm24b4b1e2","/dm24b4b1e3"
     PORT || 3000;      
     UUID || ''; 
@@ -55,6 +55,13 @@ function getRandomArray(array) {
     ARGO_AUTH || '';              
     ARGO_PORT || 8080
     WSPATH || 'dm'
+
+docker.io/blug/argo-x:xhttp 7860  
+  CLOUDFLARED_TOKEN ||  必须	设置cf tunel时获取token，镜像默认localhost:8001
+  UUID ||    必须
+  PROXY_PATH  ||  /dm242cf5 必须
+  DOMAIN || 非必需
+
 
   docker.io/blueg/xhttp:latest  //"latest"
     3000
